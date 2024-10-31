@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Updater</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #loading {
+            display: none;
+            color: blue;
+        }
+        #success {
+            color: green;
+        }
+        #error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Location Information</h1>
+    <div id="loading">Loading location data...</div>
+    <div id="location-info"></div>
+    <div id="success"></div>
+    <div id="error"></div>
+
+    <script>
+        function fetchLocation() {
+            // Show loading message
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('success').innerHTML = '';
+            document.getElementById('error').innerHTML = '';
+
+            fetch('/update-location/')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    const locationInfo = document.getElementById('location-info');
+                    const loading = document.getElementById('loading');
+                    loading.style.display = 'none';  // Hide loading message
+
+                    if (data.error) {
+                        locationInfo.innerHTML = '';
+                        document.getElementById('error').innerHTML = `<p>Error: ${data.error}</p>`;
+                    } else {
+                        locationInfo.innerHTML = `
+                            <p>Longitude: ${data.lon}</p>
+                            <p>Latitude: ${data.lat}</p>
+                            <p>Country: ${data.country}</p>
+                          
+                        `;
+                        document.getElementById('success').innerHTML = `<p>Location data updated successfully!</p>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').innerHTML = `<p>Error: ${error.message}</p>`;
+                    console.error('Fetch error:', error);
+                });
+        }
+
+        // Call fetchLocation every 20 seconds
+        setInterval(fetchLocation, 20000);
+        // Initial call to populate data immediately
+        fetchLocation();
+    </script>
+</body>
+</html>
