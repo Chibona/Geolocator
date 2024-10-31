@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Locations</title>
+</head>
+<body>
+    <h1>Saved Locations</h1>
+    <ul>
+        {% for location in locations %}
+            <li>{{ location.city }}, {{ location.country }} (IP: {{ location.ip_address }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
